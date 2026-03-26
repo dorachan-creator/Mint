@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD ꪑⅈꪀ𝕥 ❀ | Official Vibe Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff007f;
+            --mint: #00ffcc;
+            --deep: #08080c;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { cursor: none; } 
+
+        body {
+            background: var(--deep);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0; z-index: -1;
+        }
+
+        .cursor-dot {
+            width: 8px; height: 8px; background: var(--mint);
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 10000;
+            box-shadow: 0 0 15px var(--mint);
+        }
+
+        .music-player {
+            position: fixed; top: 20px; right: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--pink);
+            display: flex; align-items: center; gap: 10px;
+            z-index: 1000;
+        }
+
+        .visualizer {
+            display: flex; gap: 3px;
+        }
+        
+        .bar { 
+            width: 3px; height: 15px; background: var(--mint); 
+            animation: none; /* Initially still */
+        }
+
+        /* This class is added via JavaScript when music plays */
+        .playing .bar { 
+            animation: blink 0.5s infinite alternate; 
+        }
+
+        @keyframes blink { to { height: 5px; opacity: 0.3; } }
+
+        .hero {
+            margin-top: 80px;
+            text-align: center;
+            animation: fadeIn 2s ease;
+        }
+
+        .img-frame {
+            position: relative;
+            width: 300px; height: 300px;
+            margin: 0 auto;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background: linear-gradient(45deg, var(--pink), var(--mint));
+            padding: 8px;
+            animation: morph 6s linear infinite;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+
+        .img-frame img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+
+        .main-name {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 5rem;
+            margin: 20px 0;
+            background: linear-gradient(to right, var(--pink), #fff, var(--mint));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--pink));
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 90%; max-width: 1100px;
+            margin: 50px 0;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--mint);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.2);
+        }
+
+        .card h2 { color: var(--mint); margin-bottom: 10px; }
+
+        .btn-party {
+            background: transparent;
+            border: 2px solid var(--pink);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255,0,127,0.3);
+            margin-bottom: 100px;
+        }
+
+        .btn-party:hover {
+            background: var(--pink);
+            box-shadow: 0 0 40px var(--pink);
+        }
+
+        #overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(8, 8, 12, 0.98);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .glow-text {
+            font-size: 6rem;
+            color: var(--mint);
+            text-shadow: 0 0 20px var(--mint);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse { to { transform: scale(1.1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bday-music" src="MINT_B_DAY_MIX.mp3" loop></audio>
+
+    <div class="cursor-dot" id="dot"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <div id="player-container" class="music-player">
+        <div class="visualizer">
+            <div class="bar"></div><div class="bar" style="animation-delay: 0.2s"></div><div class="bar" style="animation-delay: 0.4s"></div>
+        </div>
+        <span style="font-size: 0.8rem; font-weight: bold;">MINT_B_DAY_MIX.mp3</span>
+    </div>
+
+    <div class="hero">
+        <div class="img-frame">
+            <img src="KomiSan.jpg" alt="Komi-San">
+        </div>
+        <h1 class="main-name">ꪑⅈꪀ𝕥 ❀</h1>
+        <p style="letter-spacing: 10px; color: var(--pink); font-weight: bold;">HAPPY BIRTHDAY</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>🍰 The Sweetest</h2>
+            <p>To the girl who makes every day better just by being there. Have the sweetest day ever!</p>
+        </div>
+        <div class="card">
+            <h2>💎 The Rarest</h2>
+            <p>You're a 1-of-1 original, Mint. Keep being the icon that you are!</p>
+        </div>
+        <div class="card">
+            <h2>🎮 Level Up</h2>
+            <p>New year, new vibes, new wins. May this year be your highest score yet!</p>
+        </div>
+        <div class="card">
+            <h2>🌟 Stay Radiant</h2>
+            <p>Don't ever let anyone dull your sparkle. You are literally glowing!</p>
+        </div>
+    </div>
+
+    <button class="btn-party" onclick="startParty()">ACTIVATE PARTY MODE 🎊</button>
+
+    <div id="overlay">
+        <h1 class="glow-text">QUEEN 👑</h1>
+        <p style="font-size: 2rem; color: white;">Happy Birthday, Mint! Stay Legendary. ✨</p>
+        <button class="btn-party" onclick="location.reload()">REPLAY VIBE</button>
+    </div>
+
+    <script>
+        const dot = document.getElementById('dot');
+        document.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            createParticle(e.clientX, e.clientY);
+        });
+
+        function createParticle(x, y) {
+            const p = document.createElement('div');
+            p.innerHTML = '✨';
+            p.style.position = 'fixed';
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            p.style.pointerEvents = 'none';
+            p.style.fontSize = '10px';
+            p.style.color = Math.random() > 0.5 ? '#ff007f' : '#00ffcc';
+            document.body.appendChild(p);
+            setTimeout(() => { p.style.opacity = '0'; p.style.transform = 'translateY(20px)'; }, 10);
+            setTimeout(() => p.remove(), 800);
+        }
+
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i=0; i<100; i++) {
+                ctx.fillStyle = "rgba(255, 255, 255, "+ Math.random() +")";
+                ctx.beginPath();
+                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+        setInterval(drawStars, 200);
+
+        function startParty() {
+            // PLAY MUSIC & ANIMATE PLAYER
+            const audio = document.getElementById('bday-music');
+            const player = document.getElementById('player-container');
+            
+            audio.play().catch(err => console.log("Music needs user interaction first."));
+            player.classList.add('playing');
+
+            document.getElementById('overlay').style.display = 'flex';
+            for(let i=0; i<50; i++) {
+                setTimeout(() => {
+                    const e = document.createElement('div');
+                    e.innerHTML = ['💖','🌸','🍦','🎀','💎'][Math.floor(Math.random()*5)];
+                    e.style.position = 'fixed';
+                    e.style.left = Math.random()*100 + 'vw';
+                    e.style.top = '110vh';
+                    e.style.fontSize = '30px';
+                    e.style.transition = '3s linear';
+                    e.style.zIndex = '10000';
+                    document.body.appendChild(e);
+                    setTimeout(() => e.style.top = '-10vh', 10);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
